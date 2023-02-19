@@ -1,8 +1,16 @@
 import fs from "fs"
-import { main } from "./index"
+import { main } from "../src/index"
 
 describe("mars rover", () => {
-  // returns correct position of successful robot
+  it("returns correct position of successful robot", () => {
+    const logSpy = jest.spyOn(console, "log")
+    jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
+      return `5 5
+    (2, 3, N) FFLFR`
+    })
+    main()
+    expect(logSpy).toHaveBeenCalledWith(`(2, 4) N`)
+  })
 
   it("rejects malformed input", () => {
     jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
