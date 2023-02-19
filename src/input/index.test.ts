@@ -17,10 +17,20 @@ describe("parseGrid", () => {
 })
 
 describe("parseRobots", () => {
-  it("returns an array of two strings when input is valid", () => {
+  it("returns an array of robot type objects when input is valid", () => {
     expect(parseRobots(["(2, 3, E) LFRFF", "(0, 2, N) FFLFRFF"])).toEqual([
-      ["2", "3", "E", "L", "F", "R", "F", "F"],
-      ["0", "2", "N", "F", "F", "L", "F", "R", "F", "F"],
+      {
+        x: "2",
+        y: "3",
+        orientation: "E",
+        instructions: ["L", "F", "R", "F", "F"],
+      },
+      {
+        x: "0",
+        y: "2",
+        orientation: "N",
+        instructions: ["F", "F", "L", "F", "R", "F", "F"],
+      },
     ])
   })
   it("throws an error when input is invalid", () => {

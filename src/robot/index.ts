@@ -1,37 +1,36 @@
-const orientations = ["N", "E", "S", "W"]
-// could be made safer with enum
+import { Instructions, OrderedOrientations, Orientations, Robot } from "./types"
 
-export const runAllRobots = (grid: [number, number], robots: string[][]) => {
+export const runAllRobots = (grid: [number, number], robots: Robot[]) => {
   const output = robots.map((robot) => runRobot(grid, robot))
   console.log(output.join("\r\n"))
 }
 
-export const runRobot = (grid: [number, number], robot: string[]) => {
+export const runRobot = (grid: [number, number], robot: Robot) => {
   const [gridHorizontalSize, gridVerticalSize] = grid
-  let [robotX, robotY, orientation, ...instructions] = robot
+  let { x: robotX, y: robotY, orientation, instructions } = robot
   // TODO check that robot is within grid to start off with
   let robXInt = parseInt(robotX, 10)
   let robYInt = parseInt(robotY, 10)
-  let orientationIndex = orientations.findIndex((s) => s === orientation)
+  let orientationIndex = OrderedOrientations.findIndex((s) => s === orientation)
   let safe = 1
 
   for (let i = 0; i < instructions.length; i++) {
     const instruction = instructions[i]
     // TODO handle (allow) lower case
     switch (instruction) {
-      case "R":
-        orientationIndex = (orientationIndex + 1) % 4
+      case Instructions.R:
+        orientationIndex = (orientationIndex + 1) % OrderedOrientations.length
         break
-      case "L":
+      case Instructions.L:
         orientationIndex = orientationIndex === 0 ? 3 : orientationIndex - 1
         break
-      case "F":
+      case Instructions.F:
         let [x, y, s] = move(
           gridHorizontalSize,
           gridVerticalSize,
           robXInt,
           robYInt,
-          orientations[orientationIndex]
+          OrderedOrientations[orientationIndex]
         )
         robXInt = x
         robYInt = y
@@ -44,9 +43,9 @@ export const runRobot = (grid: [number, number], robot: string[]) => {
   }
 
   if (safe === 1) {
-    return `(${robXInt}, ${robYInt}) ${orientations[orientationIndex]}`
+    return `(${robXInt}, ${robYInt}) ${OrderedOrientations[orientationIndex]}`
   } else if (safe === -1) {
-    return `(${robXInt}, ${robYInt}) ${orientations[orientationIndex]} LOST`
+    return `(${robXInt}, ${robYInt}) ${OrderedOrientations[orientationIndex]} LOST`
   }
 }
 
@@ -59,28 +58,28 @@ export const move = (
 ) => {
   let safe = 1
   switch (orientation) {
-    case "N":
+    case Orientations.N:
       if (robotY < gridY) {
         robotY++
       } else {
         safe = -1
       }
       break
-    case "S":
+    case Orientations.S:
       if (robotY > 0) {
         robotY--
       } else {
         safe = -1
       }
       break
-    case "E":
+    case Orientations.E:
       if (robotX < gridX) {
         robotX++
       } else {
         safe = -1
       }
       break
-    case "W":
+    case Orientations.W:
       if (robotX > 0) {
         robotY--
       } else {

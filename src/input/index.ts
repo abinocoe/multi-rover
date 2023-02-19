@@ -1,9 +1,10 @@
 import fs from "fs"
+import { Instructions, Orientations, Robot } from "../robot/types"
 
 export const getInput = (): {
   parsedX: string
   parsedY: string
-  parsedRobots: string[][]
+  parsedRobots: Robot[]
 } => {
   const input = fs.readFileSync("input.txt", "utf8")
   const [grid, ...robots] = input.split("\n").filter((line) => line.length > 0)
@@ -22,9 +23,9 @@ export const parseGrid = (grid: string) => {
   return [gridX, gridY]
 }
 
-export const parseRobots = (robots: string[]): string[][] => {
-  const cleanRobots: string[][] = robots.map((robot) => {
-    const [x, y, orientation, ...moves] = robot
+export const parseRobots = (robots: string[]): Robot[] => {
+  const cleanRobots: Robot[] = robots.map((robot) => {
+    let [x, y, orientation, ...moves] = robot
       .replace("(", "")
       .replace(")", "")
       .replaceAll(" ", "")
@@ -33,12 +34,18 @@ export const parseRobots = (robots: string[]): string[][] => {
     if (
       !Number.isInteger(parseInt(x, 10)) ||
       !Number.isInteger(parseInt(y, 10)) ||
-      !["N", "S", "E", "W"].includes(orientation) ||
-      !moves.every((move) => ["F", "L", "R"].includes(move))
+      !Object.values(Orientations).includes(orientation as any) ||
+      !moves.every((move: any) => Object.values(Instructions).includes(move))
     ) {
       throw new Error("Malformed input, check robot")
     }
-    return [x.toString(), y.toString(), orientation, ...moves]
+    const robotObject = {
+      x: x.toString(),
+      y: y.toString(),
+      orientation,
+      instructions: moves,
+    } as unknown as Robot
+    return robotObject
   })
   return cleanRobots
 }
