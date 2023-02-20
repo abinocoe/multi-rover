@@ -1,4 +1,9 @@
-import { Instructions, OrderedOrientations, Orientations, Robot } from "./types"
+import {
+  Instructions,
+  OrderedOrientations,
+  Orientations,
+  Robot,
+} from "./types.js"
 
 export const runAllRobots = (grid: [number, number], robots: Robot[]) => {
   const output = robots.map((robot) => runRobot(grid, robot))

@@ -1,5 +1,5 @@
 import fs from "fs"
-import { main } from "../src/index"
+import { main } from "../src/index.js"
 
 describe("mars rover", () => {
   it("returns correct position of successful robot", () => {

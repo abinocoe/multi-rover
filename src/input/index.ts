@@ -1,5 +1,5 @@
 import fs from "fs"
-import { Instructions, Orientations, Robot } from "../robot/types"
+import { Instructions, Orientations, Robot } from "../robot/types.js"
 
 export const getInput = (): {
   parsedX: string
@@ -7,7 +7,11 @@ export const getInput = (): {
   parsedRobots: Robot[]
 } => {
   const input = fs.readFileSync("input.txt", "utf8")
-  const [grid, ...robots] = input.split("\n").filter((line) => line.length > 0)
+  const [grid, ...robots] = input
+    .replaceAll("\n", "\r")
+    .replaceAll("\r", "\r\n")
+    .split("\r\n")
+    .filter((line) => line.length > 0)
   const [gridX, gridY] = parseGrid(grid)
   const cleanRobots = parseRobots(robots)
   return { parsedX: gridX, parsedY: gridY, parsedRobots: cleanRobots }
